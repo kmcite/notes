@@ -1,4 +1,8 @@
 import 'package:notes/main.dart';
+import 'package:notes/notes/reminders/reminder/reminder_page.dart';
+
+import '../notes/news/news_page.dart';
+import '../notes/reminders/reminder/reminder_bloc.dart';
 
 const DrawerNavigationTargets = [
   Pages.notes,
@@ -7,6 +11,7 @@ const DrawerNavigationTargets = [
   Pages.archives,
   Pages.trash,
   Pages.feedback,
+  Pages.news,
 ];
 
 const BottomNavigationTargets = [
@@ -22,7 +27,9 @@ enum Pages {
   feedback(FeedbackPage()),
   settings(SettingsPage()),
   reminders(RemindersPage()),
+  reminder(ReminderPage()),
   note(NotePage()),
+  news(NewsPage()),
   trash(TrashPage());
 
   const Pages([this.view = const NotesPage()]);
@@ -34,6 +41,10 @@ enum Pages {
 final navigationRepository = NavigationRepository();
 
 class NavigationRepository {
+  Stream<Pages?> watchNavigation() => _controller.stream;
+
+  final _controller = StreamController<Pages?>.broadcast();
+
   NavigationRepository() {
     router.routerDelegate.addListener(_listener);
   }
@@ -45,9 +56,8 @@ class NavigationRepository {
         (index) => GoRoute(
           name: DrawerNavigationTargets[index](),
           path: DrawerNavigationTargets[index].path,
-          pageBuilder: (context, state) {
-            return NoTransitionPage(child: DrawerNavigationTargets[index].view);
-          },
+          pageBuilder: (context, state) =>
+              NoTransitionPage(child: DrawerNavigationTargets[index].view),
         ),
       ),
       GoRoute(
@@ -55,11 +65,24 @@ class NavigationRepository {
         path: '/note',
         builder: (context, state) {
           try {
+            // final noteId = state.extra as int;
+            return NotePage();
+          } catch (e) {
+            return Scaffold(
+              body: '404 $e'.text().center().pad(),
+            );
+          }
+        },
+      ),
+      GoRoute(
+        name: 'reminder',
+        path: '/remnder',
+        builder: (context, state) {
+          try {
             final noteId = state.extra as int;
-
             return BlocProvider(
-              create: (context) => NoteBloc()..load(noteId),
-              child: NotePage(),
+              create: (context) => ReminderBloc()..load(noteId),
+              child: ReminderPage(),
             );
           } catch (e) {
             return Scaffold(
@@ -70,8 +93,6 @@ class NavigationRepository {
       ),
     ],
   );
-
-  final _controller = StreamController<Pages?>.broadcast();
 
   void _listener() {
     final page = Pages.values.firstWhere(
@@ -87,10 +108,17 @@ class NavigationRepository {
   }
 
   void navigateToNote(int id) {
-    router.goNamed('note', extra: id);
+    _navigateWithExtra(Pages.note, extra: id);
   }
 
-  Stream<Pages?> watchNavigation() => _controller.stream;
+  void navigateToReminder(int id) {
+    _navigateWithExtra(Pages.reminder, extra: id);
+  }
+
+  void _navigateWithExtra(Pages page, {dynamic extra}) {
+    router.goNamed(page.name, extra: extra);
+    _controller.add(page);
+  }
 
   void dispose() => _controller.close();
 }

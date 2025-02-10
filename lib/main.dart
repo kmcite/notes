@@ -1,11 +1,13 @@
 export 'package:manager/manager.dart';
 export 'package:flutter_bloc/flutter_bloc.dart';
 export 'package:notes/navigation/navigation_bloc.dart';
-export 'package:notes/settings/settings.dart';
+export 'package:notes/settings/settings_bloc.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
+
 import 'main.dart';
 export 'objectbox.g.dart';
 export 'package:notes/notes/archives/archives_bloc.dart';
-export 'package:notes/notes/normal_notes/notes_bloc.dart';
+export 'package:notes/notes/notes_bloc.dart';
 export 'package:notes/navigation/navigation_repository.dart';
 export 'package:notes/navigation/app_drawer.dart';
 export 'package:notes/navigation/app_scaffold.dart';
@@ -15,7 +17,6 @@ export 'package:go_router/go_router.dart' hide RouteData;
 export 'dart:async';
 export 'dart:convert';
 export 'package:flex_color_scheme/flex_color_scheme.dart';
-export 'package:manager/context.dart';
 export 'package:notes/notes/note/note_bloc.dart';
 export 'package:notes/notes/archives/archives_page.dart';
 export 'package:notes/settings/feedback.dart';
@@ -31,31 +32,21 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await RM.storageInitializer(HiveStorage());
   store = await openStore();
-  runApp(
-    NotesApp(),
-  );
+  runApp(NotesApp());
 }
 
 class NotesApp extends UI {
   build(context) {
-    return MaterialApp.router(
-      routerConfig: navigationRM.state.router,
+    return ShadApp.materialRouter(
+      routerConfig: navigationBloc.router,
       debugShowCheckedModeBanner: false,
-      theme: FlexThemeData.light(
-        useMaterial3: true,
-        fontFamily: 'Rec Mono Casual',
-        subThemesData: FlexSubThemesData(
-          defaultRadius: 4,
-          inputDecoratorBorderType: FlexInputBorderType.outline,
-        ),
+      theme: ShadThemeData(
+        colorScheme: lightColorScheme,
+        brightness: Brightness.light,
       ),
-      darkTheme: FlexThemeData.dark(
-        useMaterial3: true,
-        fontFamily: 'Rec Mono Casual',
-        subThemesData: FlexSubThemesData(
-          defaultRadius: 4,
-          inputDecoratorBorderType: FlexInputBorderType.outline,
-        ),
+      darkTheme: ShadThemeData(
+        colorScheme: darkColorScheme,
+        brightness: Brightness.dark,
       ),
       themeMode: settingsBloc.themeMode(),
     );
@@ -65,3 +56,12 @@ class NotesApp extends UI {
 typedef UI = ReactiveStatelessWidget;
 
 String get randomId => Uuid().v8();
+
+final lightColorScheme = ShadColorScheme.fromName(
+  colorSchemeName,
+  brightness: Brightness.light,
+);
+final darkColorScheme = ShadColorScheme.fromName(
+  colorSchemeName,
+  brightness: Brightness.dark,
+);

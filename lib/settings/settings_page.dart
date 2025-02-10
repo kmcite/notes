@@ -1,4 +1,5 @@
 import 'package:notes/main.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 class SettingsPage extends UI {
   const SettingsPage({super.key});
@@ -12,76 +13,95 @@ class SettingsPage extends UI {
       ),
       body: ListView(
         children: [
-          TextFormField(
+          ShadInput(
+            placeholder: Text('Enter your name'),
             initialValue: settingsBloc.userName(),
             onChanged: settingsBloc.userName,
           ).pad(),
-          SegmentedButton(
-            segments: [ThemeMode.light, ThemeMode.dark]
-                .map(
-                  (themeMode) => ButtonSegment(
-                    label: themeMode.name.toUpperCase().text(),
-                    value: themeMode,
-                  ),
-                )
-                .toList(),
-            selected: {
-              settingsBloc.themeMode(),
+          ShadSelect(
+            initialValue: 'slate',
+            maxHeight: 200,
+            options: shadThemeColors.map(
+              (option) => ShadOption(
+                value: option,
+                child: Text(
+                  option.capitalizeFirst(),
+                ),
+              ),
+            ),
+            selectedOptionBuilder: (context, value) {
+              return Text(value.capitalizeFirst());
             },
-            onSelectionChanged: (value) {
-              settingsBloc.themeMode(value.first);
-            },
-          ).pad(),
-          SegmentedButton(
-            segments: ViewMode.values
-                .map(
-                  (themeMode) => ButtonSegment(
-                    label: themeMode.name.toUpperCase().text(),
-                    value: themeMode,
-                  ),
-                )
-                .toList(),
-            selected: {
-              settingsBloc.viewMode(),
-            },
-            onSelectionChanged: (value) {
-              settingsBloc.viewMode(value.first);
+            onChanged: (value) {
+              if (value != null) colorSchemeNameRM.state = value;
             },
           ).pad(),
-          SwitchListTile(
+          ShadSelect(
+            initialValue: settingsBloc.themeMode(),
+            maxHeight: 200,
+            options: ThemeMode.values.map(
+              (option) => ShadOption(
+                value: option,
+                child: Text(
+                  option.name.capitalizeFirst(),
+                ),
+              ),
+            ),
+            selectedOptionBuilder: (context, value) {
+              return Text(value.name.capitalizeFirst());
+            },
+            onChanged: settingsBloc.themeMode,
+          ).pad(),
+          ShadSelect(
+            initialValue: settingsBloc.viewMode(),
+            maxHeight: 200,
+            options: ViewMode.values.map(
+              (option) => ShadOption(
+                value: option,
+                child: Text(
+                  option.name.capitalizeFirst(),
+                ),
+              ),
+            ),
+            selectedOptionBuilder: (context, value) {
+              return Text(value.name.capitalizeFirst());
+            },
+            onChanged: settingsBloc.viewMode,
+          ).pad(),
+          ShadSwitch(
             // leading:
             // Icon(Icons.vertical_align_bottom, color: theme.primaryColor),
-            title: 'Add New Items to Bottom'.text(),
+            // title: 'Add New Items to Bottom'.text(),
             value: settingsBloc.addToBottom(),
             onChanged: settingsBloc.addToBottom,
-            activeColor: theme.primaryColor,
+            // activeColor: theme.primaryColor,
             // trailing: Switch(),
           ),
-          SwitchListTile(
+          ShadSwitch(
             // leading: Icon(Icons.sort, color: theme.primaryColor),
-            title: 'Move Checked Items to Bottom'.text(),
+            // title: 'Move Checked Items to Bottom'.text(),
             value: settingsBloc.moveCheckedToBottom(),
             onChanged: settingsBloc.moveCheckedToBottom,
-            activeColor: theme.primaryColor,
+            // activeColor: theme.primaryColor,
           ),
-          SwitchListTile(
+          ShadSwitch(
             // leading: Icon(Icons.link, color: theme.primaryColor),
-            title: 'Display Rich Link Previews'.text(),
+            // title: 'Display Rich Link Previews'.text(),
             value: settingsBloc.showLinkPreviews(),
             onChanged: settingsBloc.showLinkPreviews,
-            activeColor: theme.primaryColor,
+            // activeColor: theme.primaryColor,
+            // trailing: Switch(),
+          ),
+          ShadSwitch(
+            // subtitle: Icon(Icons.share, color: theme.primaryColor),
+            // title: 'Enable Sharing'.text(),
+            value: settingsBloc.enableSharing(),
+            onChanged: settingsBloc.enableSharing,
+            // activeColor: theme.primaryColor,
             // trailing: Switch(),
           ),
           Column(
             children: [
-              SwitchListTile(
-                // subtitle: Icon(Icons.share, color: theme.primaryColor),
-                title: 'Enable Sharing'.text(),
-                value: settingsBloc.enableSharing(),
-                onChanged: settingsBloc.enableSharing,
-                activeColor: theme.primaryColor,
-                // trailing: Switch(),
-              ),
               ListTile(
                 leading: Icon(Icons.restore, color: theme.colorScheme.error),
                 // title: 'Morning ${reminderTimes().morning}'.text(),
@@ -140,20 +160,20 @@ class SettingsPage extends UI {
                   title: 'Clear All Notes'.text(),
                   content: 'Are you sure you want to delete all notes?'.text(),
                   actions: [
-                    // TextButton(
-                    //   onPressed: navigator.back,
-                    //   child: 'Cancel'.text(),
-                    // ),
-                    // TextButton(
-                    //   onPressed: () {
-                    //     removeAllNotes();
-                    //     navigator.back();
-                    //   },
-                    //   child: 'Clear'.text(),
-                    //   style: TextButton.styleFrom(
-                    //     foregroundColor: theme.colorScheme.error,
-                    //   ),
-                    // ),
+                    TextButton(
+                      onPressed: context.pop,
+                      child: 'Cancel'.text(),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        notesRM.removeAll();
+                        context.pop();
+                      },
+                      child: 'Clear'.text(),
+                      style: TextButton.styleFrom(
+                        foregroundColor: theme.colorScheme.error,
+                      ),
+                    ),
                   ],
                 ),
               );
@@ -162,5 +182,11 @@ class SettingsPage extends UI {
         ],
       ),
     );
+  }
+}
+
+extension on String {
+  String capitalizeFirst() {
+    return '${this[0].toUpperCase()}${this.substring(1)}';
   }
 }

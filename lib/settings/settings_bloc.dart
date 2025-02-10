@@ -1,18 +1,49 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:notes/main.dart';
 
-part 'settings.freezed.dart';
-part 'settings.g.dart';
+part 'settings_bloc.freezed.dart';
+part 'settings_bloc.g.dart';
 
 final settingsBloc = SettingsBloc();
 
 class SettingsBloc {
-  final settingsRM = rms(
-    Settings(),
-    persisted: () => persisted(
-      'settings',
-      Settings.fromJson,
+  final settingsRM = RM.inject(
+    () => Settings(),
+    persist: () => PersistState(
+      key: 'settings',
+      fromJson: (json) => Settings.fromJson(jsonDecode(json)),
+      toJson: (s) => jsonEncode(s.toJson()),
     ),
   );
+
+  String get _imagePath => settings().imagePath;
+  set _imagePath(String value) {
+    settings(settings().copyWith(imagePath: value));
+  }
+
+  File get _defaultImageFile {
+    return File("D:\\quiz.png");
+  }
+
+  File get imageFile {
+    if (_imagePath == '') {
+      return _defaultImageFile;
+    }
+    return File(_imagePath);
+  }
+
+  void pickImage() async {
+    final filePickerResult = await FilePicker.platform.pickFiles();
+    if (filePickerResult != null) {
+      final path = filePickerResult.files.first.path;
+      if (path != null) {
+        _imagePath = path;
+      }
+    }
+  }
+
   Settings settings([Settings? _]) {
     if (_ != null) settingsRM.state = _;
     return settingsRM.state;
@@ -66,8 +97,26 @@ class Settings with _$Settings {
     @Default(ThemeMode.system) ThemeMode themeMode,
     @Default(ViewMode.list) ViewMode viewMode,
     @Default('Adn') String userName,
+    @Default('Adn') String imagePath,
   }) = _Settings;
 
   factory Settings.fromJson(Map<String, dynamic> json) =>
       _$SettingsFromJson(json);
 }
+
+final colorSchemeNameRM = RM.inject(() => shadThemeColors.first);
+String get colorSchemeName => colorSchemeNameRM.state;
+final shadThemeColors = [
+  'blue',
+  'gray',
+  'green',
+  'neutral',
+  'orange',
+  'red',
+  'rose',
+  'slate',
+  'stone',
+  'violet',
+  'yellow',
+  'zinc',
+];

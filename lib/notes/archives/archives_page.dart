@@ -9,21 +9,33 @@ class ArchivesPage extends UI {
       appBar: AppBar(
         title: "Archives".text(),
       ),
-      body: ListView.builder(
-        itemCount: archivesRM.archives.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(archivesRM.archives[index].title),
-            trailing: IconButton(
-              icon: Icon(Icons.unarchive),
-              onPressed: () {
-                final note = archivesRM.archives[index];
-                archivesRM.unArchive(note);
+      body: archivesRM.archives.isEmpty
+          ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.archive,
+                  size: 120,
+                  color: Colors.amber,
+                ).center(),
+                'Archives are empty for now'.text(),
+              ],
+            )
+          : ListView.builder(
+              itemCount: archivesRM.archives.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(archivesRM.archives[index].title),
+                  trailing: IconButton(
+                    icon: Icon(Icons.unarchive),
+                    onPressed: () {
+                      final note = archivesRM.archives[index];
+                      archivesRM.unArchive(note);
+                    },
+                  ),
+                );
               },
             ),
-          );
-        },
-      ),
     );
   }
 }

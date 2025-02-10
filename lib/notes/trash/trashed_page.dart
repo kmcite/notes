@@ -18,26 +18,44 @@ class TrashPage extends UI {
           ).pad(right: 8),
         ],
       ),
-      body: ListView.separated(
-        separatorBuilder: (context, index) => Divider(
-            height: 1, thickness: 1, color: Theme.of(context).primaryColor),
-        itemCount: trashedRM.trashed.length,
-        itemBuilder: (context, index) {
-          final note = trashedRM.trashed.elementAt(index);
-          return ListTile(
-            title: Text(note.title),
-            subtitle: Text(note.details),
-            leading: IconButton(
-              icon: Icon(Icons.restore_from_trash),
-              onPressed: () => trashedRM.restoreNote(note),
-            ).pad(right: 8),
-            trailing: IconButton(
-              icon: Icon(Icons.delete_forever),
-              onPressed: () => trashedRM.permanentlyDeleteNote(note),
-            ).pad(right: 8),
-          ).pad();
-        },
-      ),
+      body: trashedRM.trashed.isEmpty
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.delete_forever,
+                    size: 120,
+                    color: Colors.amber,
+                  ),
+                  'Trash is empty for now'.text(),
+                ],
+              ),
+            )
+          : ListView.separated(
+              separatorBuilder: (context, index) => Divider(
+                  height: 1,
+                  thickness: 1,
+                  color: Theme.of(context).primaryColor),
+              itemCount: trashedRM.trashed.length,
+              itemBuilder: (context, index) {
+                final note = trashedRM.trashed.elementAt(index);
+                return ListTile(
+                  title: Text(note.title),
+                  subtitle: Text(note.details),
+                  leading: IconButton(
+                    tooltip: "Restore",
+                    icon: Icon(Icons.restore_from_trash),
+                    onPressed: () => trashedRM.restoreNote(note),
+                  ).pad(right: 8),
+                  trailing: IconButton(
+                    tooltip: "Permanently Delete",
+                    icon: Icon(Icons.delete_forever),
+                    onPressed: () => trashedRM.permanentlyDeleteNote(note),
+                  ).pad(right: 8),
+                ).pad();
+              },
+            ),
     );
   }
 }

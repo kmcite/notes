@@ -7,11 +7,13 @@ class FeedbackPage extends UI {
   Widget build(BuildContext context) {
     return AppScaffold(
       appBar: AppBar(
-        title: Card(
-          child: 'Feedback'.text().pad(),
-        ),
+        title: 'Feedback'.text().pad(),
       ),
-      body: null,
+      body: Icon(
+        Icons.feedback,
+        size: 100,
+        color: Colors.amber,
+      ).center(),
     );
   }
 }

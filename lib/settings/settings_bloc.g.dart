@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'settings.dart';
+part of 'settings_bloc.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
@@ -17,6 +17,7 @@ _$SettingsImpl _$$SettingsImplFromJson(Map<String, dynamic> json) =>
       viewMode: $enumDecodeNullable(_$ViewModeEnumMap, json['viewMode']) ??
           ViewMode.list,
       userName: json['userName'] as String? ?? 'Adn',
+      imagePath: json['imagePath'] as String? ?? 'Adn',
     );
 
 Map<String, dynamic> _$$SettingsImplToJson(_$SettingsImpl instance) =>
@@ -28,6 +29,7 @@ Map<String, dynamic> _$$SettingsImplToJson(_$SettingsImpl instance) =>
       'themeMode': _$ThemeModeEnumMap[instance.themeMode]!,
       'viewMode': _$ViewModeEnumMap[instance.viewMode]!,
       'userName': instance.userName,
+      'imagePath': instance.imagePath,
     };
 
 const _$ThemeModeEnumMap = {

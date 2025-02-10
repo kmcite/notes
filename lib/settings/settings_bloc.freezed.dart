@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'settings.dart';
+part of 'settings_bloc.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -27,6 +27,7 @@ mixin _$Settings {
   ThemeMode get themeMode => throw _privateConstructorUsedError;
   ViewMode get viewMode => throw _privateConstructorUsedError;
   String get userName => throw _privateConstructorUsedError;
+  String get imagePath => throw _privateConstructorUsedError;
 
   /// Serializes this Settings to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -50,7 +51,8 @@ abstract class $SettingsCopyWith<$Res> {
       bool showLinkPreviews,
       ThemeMode themeMode,
       ViewMode viewMode,
-      String userName});
+      String userName,
+      String imagePath});
 }
 
 /// @nodoc
@@ -75,6 +77,7 @@ class _$SettingsCopyWithImpl<$Res, $Val extends Settings>
     Object? themeMode = null,
     Object? viewMode = null,
     Object? userName = null,
+    Object? imagePath = null,
   }) {
     return _then(_value.copyWith(
       addToBottom: null == addToBottom
@@ -105,6 +108,10 @@ class _$SettingsCopyWithImpl<$Res, $Val extends Settings>
           ? _value.userName
           : userName // ignore: cast_nullable_to_non_nullable
               as String,
+      imagePath: null == imagePath
+          ? _value.imagePath
+          : imagePath // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -124,7 +131,8 @@ abstract class _$$SettingsImplCopyWith<$Res>
       bool showLinkPreviews,
       ThemeMode themeMode,
       ViewMode viewMode,
-      String userName});
+      String userName,
+      String imagePath});
 }
 
 /// @nodoc
@@ -147,6 +155,7 @@ class __$$SettingsImplCopyWithImpl<$Res>
     Object? themeMode = null,
     Object? viewMode = null,
     Object? userName = null,
+    Object? imagePath = null,
   }) {
     return _then(_$SettingsImpl(
       addToBottom: null == addToBottom
@@ -177,6 +186,10 @@ class __$$SettingsImplCopyWithImpl<$Res>
           ? _value.userName
           : userName // ignore: cast_nullable_to_non_nullable
               as String,
+      imagePath: null == imagePath
+          ? _value.imagePath
+          : imagePath // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -191,7 +204,8 @@ class _$SettingsImpl with DiagnosticableTreeMixin implements _Settings {
       this.showLinkPreviews = false,
       this.themeMode = ThemeMode.system,
       this.viewMode = ViewMode.list,
-      this.userName = 'Adn'});
+      this.userName = 'Adn',
+      this.imagePath = 'Adn'});
 
   factory _$SettingsImpl.fromJson(Map<String, dynamic> json) =>
       _$$SettingsImplFromJson(json);
@@ -217,10 +231,13 @@ class _$SettingsImpl with DiagnosticableTreeMixin implements _Settings {
   @override
   @JsonKey()
   final String userName;
+  @override
+  @JsonKey()
+  final String imagePath;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'Settings(addToBottom: $addToBottom, enableSharing: $enableSharing, moveCheckedToBottom: $moveCheckedToBottom, showLinkPreviews: $showLinkPreviews, themeMode: $themeMode, viewMode: $viewMode, userName: $userName)';
+    return 'Settings(addToBottom: $addToBottom, enableSharing: $enableSharing, moveCheckedToBottom: $moveCheckedToBottom, showLinkPreviews: $showLinkPreviews, themeMode: $themeMode, viewMode: $viewMode, userName: $userName, imagePath: $imagePath)';
   }
 
   @override
@@ -234,7 +251,8 @@ class _$SettingsImpl with DiagnosticableTreeMixin implements _Settings {
       ..add(DiagnosticsProperty('showLinkPreviews', showLinkPreviews))
       ..add(DiagnosticsProperty('themeMode', themeMode))
       ..add(DiagnosticsProperty('viewMode', viewMode))
-      ..add(DiagnosticsProperty('userName', userName));
+      ..add(DiagnosticsProperty('userName', userName))
+      ..add(DiagnosticsProperty('imagePath', imagePath));
   }
 
   @override
@@ -255,13 +273,23 @@ class _$SettingsImpl with DiagnosticableTreeMixin implements _Settings {
             (identical(other.viewMode, viewMode) ||
                 other.viewMode == viewMode) &&
             (identical(other.userName, userName) ||
-                other.userName == userName));
+                other.userName == userName) &&
+            (identical(other.imagePath, imagePath) ||
+                other.imagePath == imagePath));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, addToBottom, enableSharing,
-      moveCheckedToBottom, showLinkPreviews, themeMode, viewMode, userName);
+  int get hashCode => Object.hash(
+      runtimeType,
+      addToBottom,
+      enableSharing,
+      moveCheckedToBottom,
+      showLinkPreviews,
+      themeMode,
+      viewMode,
+      userName,
+      imagePath);
 
   /// Create a copy of Settings
   /// with the given fields replaced by the non-null parameter values.
@@ -287,7 +315,8 @@ abstract class _Settings implements Settings {
       final bool showLinkPreviews,
       final ThemeMode themeMode,
       final ViewMode viewMode,
-      final String userName}) = _$SettingsImpl;
+      final String userName,
+      final String imagePath}) = _$SettingsImpl;
 
   factory _Settings.fromJson(Map<String, dynamic> json) =
       _$SettingsImpl.fromJson;
@@ -306,6 +335,8 @@ abstract class _Settings implements Settings {
   ViewMode get viewMode;
   @override
   String get userName;
+  @override
+  String get imagePath;
 
   /// Create a copy of Settings
   /// with the given fields replaced by the non-null parameter values.

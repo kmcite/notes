@@ -28,6 +28,8 @@ dependencies:
   objectbox: ^4.0.3
   objectbox_flutter_libs: ^4.0.3
   objectbox_generator: ^4.0.3
+  file_picker: ^8.1.5
+  shadcn_ui: ^0.16.3
   
 dev_dependencies:
   flutter_launcher_icons: "^0.14.1"

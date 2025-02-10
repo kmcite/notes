@@ -1,17 +1,7 @@
-// final reminderTimesRM = RM.inject(
-//   () => ReminderTimes(),
-//   // persist: () => persisted(
-//   //   'reminderTimes',
-//   //   ReminderTimes.fromMap,
-//   // ),
-// );
-
 import 'package:notes/main.dart';
 
 ReminderTimes reminderTimes([ReminderTimes? reminderTimes]) {
   throw UnimplementedError();
-  // if (reminderTimes != null) reminderTimesRM.state = reminderTimes;
-  // return reminderTimesRM.state;
 }
 
 class ReminderTimes {

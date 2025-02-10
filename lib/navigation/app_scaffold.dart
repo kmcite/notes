@@ -18,20 +18,23 @@ class AppScaffold extends UI {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: AppDrawer(),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: navigationRM.state.bottomBarIndex,
-        onDestinationSelected: bottomBarNavigationRequested,
-        destinations: [
-          ...BottomNavigationTargets.map(
-            (page) {
-              return NavigationDestination(
-                label: page.name,
-                icon: page.name[0].toUpperCase().text(),
-              );
-            },
-          ),
-        ],
-      ),
+      bottomNavigationBar: BottomNavigationTargets.contains(navigationBloc.page)
+          ? NavigationBar(
+              selectedIndex: navigationBloc.bottomBarIndex,
+              onDestinationSelected:
+                  navigationBloc.bottomBarNavigationRequested,
+              destinations: [
+                ...BottomNavigationTargets.map(
+                  (page) {
+                    return NavigationDestination(
+                      label: page.name,
+                      icon: page.name[0].toUpperCase().text(),
+                    );
+                  },
+                ),
+              ],
+            )
+          : bottomNavigationBar,
       floatingActionButton: floatingActionButton,
       appBar: appBar,
       body: body,
