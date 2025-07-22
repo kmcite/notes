@@ -6,26 +6,25 @@ version: 1.0.0+1
 environment:
   sdk: ^3.6.0
 dependencies:
-  states_rebuilder:
-  forui: 
+  forui:
   flutter:
     sdk: flutter
-  cupertino_icons: 
+  cupertino_icons:
   colornames:
   path_provider:
-  build_runner: 
+  build_runner:
   package_info_plus:
-  go_router: 
-  file_picker: 
-  uuid: 
-  equatable: 
-  get: ^4.7.2
-  floor: ^1.4.0
-  copy_with_extension: ^6.0.1
-  copy_with_extension_gen: ^6.0.0
+  go_router:
+  file_picker:
+  uuid:
+  objectbox: ^4.2.0
+  objectbox_flutter_libs: ^4.2.0
+  objectbox_generator: ^4.2.0
+  manager:
+    path: D://applications//manager//manager
+  signals_flutter: ^6.0.2
 dev_dependencies:
-  floor_generator: ^1.4.0
-  flutter_launcher_icons: 
+  flutter_launcher_icons:
 flutter:
   assets:
     - assets/

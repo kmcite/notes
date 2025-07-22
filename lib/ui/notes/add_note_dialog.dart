@@ -3,32 +3,26 @@ import 'package:forui/forui.dart';
 import 'package:notes/domain/api/notes_repository.dart';
 import 'package:notes/domain/models/note.dart';
 import 'package:notes/main.dart';
-import 'package:notes/utils/api.dart';
-import 'package:notes/utils/navigator.dart';
-import 'package:states_rebuilder/states_rebuilder.dart';
+import 'package:signals_flutter/signals_flutter.dart';
 
-mixin AddNoteBloc {
-  final noteRM = RM.inject(() => Note());
-  Note note([Note? value]) {
-    if (value != null) {
-      noteRM
-        ..state = value
-        ..notify();
-    }
-    return noteRM.state;
+final counterId = signal(0);
+
+final noteToAdd = signal(Note());
+
+void saveNote() {
+  var id = counterId();
+  while (notes.containsKey(id)) {
+    id++;
   }
 
-  void save() {
-    notesRepository.inserter(note());
-    cancel();
-  }
+  noteToAdd.set(noteToAdd()..id = id);
+  notes[id] = noteToAdd(); // optional: save it right away
 
-  void cancel() {
-    navigator.back();
-  }
+  counterId.value = id + 1; // ensure future IDs move forward
+  navigator.back();
 }
 
-class AddNoteDialog extends UI with AddNoteBloc {
+class AddNoteDialog extends UI {
   @override
   Widget build(BuildContext context) {
     return FDialog(
@@ -38,17 +32,17 @@ class AddNoteDialog extends UI with AddNoteBloc {
         children: [
           FTextField(
             label: 'name'.text(),
-            initialValue: note().title,
+            initialText: noteToAdd().title,
             onChange: (value) {
-              note(note().copyWith(title: value));
+              noteToAdd.set(noteToAdd()..title = value);
             },
             maxLines: 2,
           ).pad(),
           FTextField(
             label: 'details'.text(),
-            initialValue: note().details,
+            initialText: noteToAdd().details,
             onChange: (value) {
-              note(note().copyWith(details: value));
+              noteToAdd.set(noteToAdd()..details = value);
             },
             minLines: 4,
             maxLines: null,
@@ -57,13 +51,13 @@ class AddNoteDialog extends UI with AddNoteBloc {
       ),
       actions: [
         FButton.icon(
-          style: FButtonStyle.primary,
-          onPress: save,
+          style: FButtonStyle.primary(),
+          onPress: saveNote,
           child: 'Okay'.text(),
         ),
         FButton.icon(
-          style: FButtonStyle.destructive,
-          onPress: cancel,
+          style: FButtonStyle.destructive(),
+          onPress: navigator.back,
           child: 'Cancel'.text(),
         ),
       ],

@@ -1,12 +1,10 @@
-import 'package:copy_with_extension/copy_with_extension.dart';
-import 'package:floor/floor.dart';
-part 'note.g.dart';
+import 'package:objectbox/objectbox.dart';
+// part 'note.g.dart';
 
-@CopyWith()
-@entity
+@Entity()
 class Note {
-  @PrimaryKey(autoGenerate: true)
-  int? id; // Primary key (auto-incremented)
+  @Id()
+  int? id;
   String title;
   String details;
   bool editing;

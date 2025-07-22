@@ -3,26 +3,12 @@ import 'package:forui/forui.dart';
 import 'package:notes/domain/api/configuration_repository.dart';
 import 'package:notes/domain/api/notes_repository.dart';
 import 'package:notes/main.dart';
-import 'package:notes/utils/navigator.dart';
-import 'package:notes/utils/api.dart';
 
-mixin SettingsBloc {
-  late final deleteAll = notesRepository.deleteAll;
-  THEMES _themes([THEMES? val]) {
-    if (val != null) {
-      themeRepository.state = val;
-    }
-    return themeRepository.state;
-  }
+typedef Themes = ({FThemeData dark, FThemeData light});
 
-  bool get dark => darkRepository.state;
-  void toggleDark() => darkRepository.state = !dark;
+void deleteAllNotes() => notes.clear();
 
-  String get name => nameRepository.state;
-  void setName(String value) => nameRepository.state = value;
-}
-
-class SettingsPage extends UI with SettingsBloc {
+class SettingsPage extends UI {
   SettingsPage({super.key});
 
   @override
@@ -30,36 +16,35 @@ class SettingsPage extends UI with SettingsBloc {
     return FScaffold(
       header: FHeader.nested(
         title: 'SETTINGS'.text(),
-        prefixActions: [
+        prefixes: [
           FButton.icon(
             onPress: navigator.back,
-            child: FIcon(FAssets.icons.arrowLeft),
+            child: Icon(FIcons.arrowLeft),
           )
         ],
       ),
-      content: ListView(
+      child: ListView(
         children: [
           FTextField(
             label: Text('Enter your name'),
-            initialValue: name,
-            onChange: setName,
+            initialText: userName(),
+            onChange: userName.set,
           ).pad(),
           FTile(
-            prefixIcon: FIcon(dark ? FAssets.icons.moon : FAssets.icons.sun),
-            title: '${dark ? "DARK" : "LIGHT"}'.text(),
-            onPress: toggleDark,
+            prefix: Icon(darkMode() ? FIcons.moon : FIcons.sun),
+            title: '${darkMode() ? "DARK" : "LIGHT"}'.text(),
+            onPress: () => darkMode.set(!darkMode()),
           ).pad(),
           FTileGroup.builder(
-            count: themes.length,
-            divider: FTileDivider.full,
+            count: AvailableThemes.length,
+            divider: FItemDivider.full,
             tileBuilder: (context, index) {
-              final _theme = themes.elementAt(index);
+              final _theme = AvailableThemes.elementAt(index);
               return FTile(
-                suffixIcon: _theme == _themes()
-                    ? FIcon(FAssets.icons.checkCheck)
-                    : null,
+                suffix:
+                    _theme == currentTheme() ? Icon(FIcons.checkCheck) : null,
                 title: _theme.dark.debugLabel!.split(' ').first.text(),
-                onPress: () => _themes(_theme),
+                onPress: () => currentTheme.set(_theme),
               );
             },
           ).pad(),
@@ -197,7 +182,7 @@ class SettingsPage extends UI with SettingsBloc {
           //       : () => settingsBloc.settings(Settings()),
           // ),
           FTile(
-            prefixIcon: FIcon(FAssets.icons.delete),
+            prefix: Icon(FIcons.delete),
             title: 'Clear All Notes'.text(),
             onPress: () {
               showDialog(
@@ -209,15 +194,15 @@ class SettingsPage extends UI with SettingsBloc {
                   actions: [
                     FButton(
                       onPress: () async {
-                        await deleteAll();
+                        deleteAllNotes();
                         navigator.back();
                       },
-                      style: FButtonStyle.destructive,
-                      label: 'Clear'.text(),
+                      style: FButtonStyle.destructive(),
+                      child: 'Clear'.text(),
                     ),
                     FButton(
                       onPress: navigator.back,
-                      label: 'Cancel'.text(),
+                      child: 'Cancel'.text(),
                     ),
                   ],
                 ),

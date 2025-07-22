@@ -1,46 +1,111 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:notes/domain/api/notes_repository.dart';
 import 'package:notes/domain/models/note.dart';
 import 'package:notes/main.dart';
-import 'package:notes/utils/navigator.dart';
-import 'package:notes/ui/notes/note/note_bloc.dart';
-import 'package:notes/utils/api.dart';
+import 'package:signals_flutter/signals_flutter.dart';
 
-class NotePage extends UI with NoteBloc {
+final hasChangesRM = signal(false);
+
+void delete() {
+  // notesRepository.remove(note().id!);
+  cancel();
+}
+
+bool get hasChanges => hasChangesRM.value;
+
+void save() {
+  // notesRepository.put(note());
+  hasChangesRM.value = false;
+}
+
+void cancel() async {
+  navigator.back();
+  // final _note = await notesRepository
+  //     .getAll()
+  //     .where((any) => any.id == note().id)
+  //     .firstOrNull;
+  // if (_note != null) notesRepository.put(_note);
+}
+
+void archive() {
+  note.set(note()..noteType = NoteType.Archived);
+  hasChangesRM.value = true;
+}
+
+void restoreAsNote() {
+  note.set(note()..noteType = NoteType.NormalNote);
+  hasChangesRM.value = true;
+}
+
+void restoreAsReminder() {
+  note.set(note()..noteType = NoteType.ImageNotes);
+  hasChangesRM.value = true;
+}
+
+void toggleStatus() {
+  final _note = note();
+  if (_note.isCompleted) {
+    note.set(_note..noteStatus = NoteStatus.Incomplete);
+  } else {
+    note.set(_note..noteStatus = NoteStatus.Complete);
+  }
+  hasChangesRM.value = true;
+}
+
+String title([String? value]) {
+  if (value != null) {
+    final _value = note()..title = value;
+    note.set(_value);
+    hasChangesRM.value = true;
+  }
+  return note().title;
+}
+
+String details([String? value]) {
+  if (value != null) {
+    final _value = note()..details = value;
+    note.set(_value);
+    hasChangesRM.value = true;
+  }
+  return note().details;
+}
+
+class NotePage extends UI {
   NotePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return FScaffold(
-      content: Column(
+      child: Column(
         spacing: 16,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           FHeader.nested(
             title: Text(note().title),
-            prefixActions: [
+            prefixes: [
               FButton.icon(
                 onPress: navigator.back,
-                child: FIcon(FAssets.icons.arrowLeft),
+                child: Icon(FIcons.arrowLeft),
               ),
             ],
-            suffixActions: [
+            suffixes: [
               FButton.icon(
-                style: FButtonStyle.destructive,
+                style: FButtonStyle.destructive(),
                 onPress: hasChanges ? save : null,
-                child: FIcon(FAssets.icons.save),
+                child: Icon(FIcons.save),
               ),
               FButton.icon(
-                style: FButtonStyle.destructive,
+                style: FButtonStyle.destructive(),
                 onPress: delete,
-                child: FIcon(FAssets.icons.delete),
+                child: Icon(FIcons.delete),
               ),
             ],
           ),
           FTextField(
             label: Text('Title'),
             key: ValueKey('title'),
-            initialValue: note().title,
+            initialText: note().title,
             onChange: title,
             maxLines: null,
           ),
@@ -48,7 +113,7 @@ class NotePage extends UI with NoteBloc {
             child: FTextField(
               label: Text('Details'),
               key: ValueKey('details'),
-              initialValue: details(),
+              initialText: details(),
               onChange: details,
               maxLines: null,
               minLines: 4,
@@ -62,10 +127,10 @@ class NotePage extends UI with NoteBloc {
                 onPress: () {
                   toggleStatus();
                 },
-                child: FIcon(
+                child: Icon(
                   note().noteStatus == NoteStatus.Complete
-                      ? FAssets.icons.check
-                      : FAssets.icons.clock,
+                      ? FIcons.check
+                      : FIcons.clock,
                 ),
               ),
             ],
@@ -76,22 +141,22 @@ class NotePage extends UI with NoteBloc {
                 return Expanded(
                   child: FButton.icon(
                     style: type == note().noteType
-                        ? FButtonStyle.primary
-                        : FButtonStyle.outline,
+                        ? FButtonStyle.primary()
+                        : FButtonStyle.outline(),
                     key: ValueKey(type),
                     // enabled: note.noteType != type,
                     onPress: () {
-                      note(note()..noteType = type);
+                      note.set(note()..noteType = type);
                     },
                     // height: 80,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        FIcon(type.icon, size: 36),
-                        FIcon(
+                        Icon(type.icon, size: 36),
+                        Icon(
                           type == note().noteType
-                              ? FAssets.icons.checkCheck
-                              : FAssets.icons.fileQuestion,
+                              ? FIcons.checkCheck
+                              : FIcons.fileQuestionMark,
                           size: 20,
                         ),
                       ],
@@ -112,12 +177,12 @@ class NotePage extends UI with NoteBloc {
 }
 
 extension on NoteType {
-  SvgAsset get icon => switch (this) {
-        NoteType.NormalNote => FAssets.icons.notebook,
-        NoteType.ImageNotes => FAssets.icons.image,
-        NoteType.Archived => FAssets.icons.archive,
-        NoteType.Deleted => FAssets.icons.delete,
-        NoteType.New => FAssets.icons.newspaper,
+  IconData get icon => switch (this) {
+        NoteType.NormalNote => FIcons.notebook,
+        NoteType.ImageNotes => FIcons.image,
+        NoteType.Archived => FIcons.archive,
+        NoteType.Deleted => FIcons.delete,
+        NoteType.New => FIcons.newspaper,
       };
 }
 
@@ -161,7 +226,7 @@ class NoteEditToolbar extends UI {
               ),
             );
           },
-          child: FIcon(FAssets.icons.plus),
+          child: Icon(FIcons.plus),
         ).pad(),
         FButton.icon(
           onPress: () {
@@ -209,11 +274,11 @@ class NoteEditToolbar extends UI {
               },
             );
           },
-          child: FIcon(FAssets.icons.thermometer),
+          child: Icon(FIcons.thermometer),
         ).pad(),
         FButton.icon(
           onPress: () {},
-          child: FIcon(FAssets.icons.textSearch),
+          child: Icon(FIcons.textSearch),
         ).pad(),
         FButton.icon(
           onPress: () {
@@ -260,7 +325,7 @@ class NoteEditToolbar extends UI {
               ),
             );
           },
-          child: FIcon(FAssets.icons.menu),
+          child: Icon(FIcons.menu),
         ).pad(),
         "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}"
             .text()

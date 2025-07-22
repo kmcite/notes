@@ -1,8 +1,8 @@
 import 'package:forui/theme.dart';
-import 'package:notes/ui/notes/notes_page.dart';
-import 'package:states_rebuilder/scr/state_management/rm.dart';
+import 'package:notes/ui/notes/notes.dart';
+import 'package:signals_flutter/signals_flutter.dart';
 
-final themes = [
+final AvailableThemes = [
   FThemes.blue,
   FThemes.green,
   FThemes.orange,
@@ -14,7 +14,10 @@ final themes = [
   FThemes.zinc,
 ];
 
-final darkRepository = RM.inject<bool>(() => true);
-final themeRepository = RM.inject(() => themes.first);
-final viewModeRepository = RM.inject(() => ViewMode.list);
-final nameRepository = RM.inject(() => '');
+final currentTheme = signal(AvailableThemes.first);
+final fThemeData = computed(
+  () => darkMode() ? currentTheme().dark : currentTheme().light,
+);
+final darkMode = signal(true);
+final viewMode = signal(ViewMode.list);
+final userName = signal('');
