@@ -20,39 +20,63 @@ export 'package:objectbox/objectbox.dart'; // so that callers only have to impor
 
 final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
-      id: const obx_int.IdUid(1, 6080516527894194749),
-      name: 'Note',
-      lastPropertyId: const obx_int.IdUid(5, 886081747249739279),
-      flags: 0,
-      properties: <obx_int.ModelProperty>[
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(1, 4742901106789286176),
-            name: 'id',
-            type: 6,
-            flags: 1),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(2, 534990405094751321),
-            name: 'title',
-            type: 9,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(3, 8775641030859732068),
-            name: 'details',
-            type: 9,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(4, 7183216039681155326),
-            name: 'editing',
-            type: 1,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(5, 886081747249739279),
-            name: 'isComplete',
-            type: 1,
-            flags: 0)
-      ],
-      relations: <obx_int.ModelRelation>[],
-      backlinks: <obx_int.ModelBacklink>[])
+    id: const obx_int.IdUid(1, 6080516527894194749),
+    name: 'Note',
+    lastPropertyId: const obx_int.IdUid(9, 3835512858604430729),
+    flags: 0,
+    properties: <obx_int.ModelProperty>[
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(1, 4742901106789286176),
+        name: 'id',
+        type: 6,
+        flags: 1,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(2, 534990405094751321),
+        name: 'title',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(3, 8775641030859732068),
+        name: 'details',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(4, 7183216039681155326),
+        name: 'editing',
+        type: 1,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(6, 5337529481251879145),
+        name: 'timeCreated',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(7, 762996658688384107),
+        name: 'statusIndex',
+        type: 6,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(8, 2969041486344561531),
+        name: 'typeIndex',
+        type: 6,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(9, 3835512858604430729),
+        name: 'wasBeforeIndex',
+        type: 6,
+        flags: 0,
+      ),
+    ],
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[],
+  ),
 ];
 
 /// Shortcut for [obx.Store.new] that passes [getObjectBoxModel] and for Flutter
@@ -66,85 +90,127 @@ final _entities = <obx_int.ModelEntity>[
 /// For Flutter apps, also calls `loadObjectBoxLibraryAndroidCompat()` from
 /// the ObjectBox Flutter library to fix loading the native ObjectBox library
 /// on Android 6 and older.
-Future<obx.Store> openStore(
-    {String? directory,
-    int? maxDBSizeInKB,
-    int? maxDataSizeInKB,
-    int? fileMode,
-    int? maxReaders,
-    bool queriesCaseSensitiveDefault = true,
-    String? macosApplicationGroup}) async {
+Future<obx.Store> openStore({
+  String? directory,
+  int? maxDBSizeInKB,
+  int? maxDataSizeInKB,
+  int? fileMode,
+  int? maxReaders,
+  bool queriesCaseSensitiveDefault = true,
+  String? macosApplicationGroup,
+}) async {
   await loadObjectBoxLibraryAndroidCompat();
-  return obx.Store(getObjectBoxModel(),
-      directory: directory ?? (await defaultStoreDirectory()).path,
-      maxDBSizeInKB: maxDBSizeInKB,
-      maxDataSizeInKB: maxDataSizeInKB,
-      fileMode: fileMode,
-      maxReaders: maxReaders,
-      queriesCaseSensitiveDefault: queriesCaseSensitiveDefault,
-      macosApplicationGroup: macosApplicationGroup);
+  return obx.Store(
+    getObjectBoxModel(),
+    directory: directory ?? (await defaultStoreDirectory()).path,
+    maxDBSizeInKB: maxDBSizeInKB,
+    maxDataSizeInKB: maxDataSizeInKB,
+    fileMode: fileMode,
+    maxReaders: maxReaders,
+    queriesCaseSensitiveDefault: queriesCaseSensitiveDefault,
+    macosApplicationGroup: macosApplicationGroup,
+  );
 }
 
 /// Returns the ObjectBox model definition for this project for use with
 /// [obx.Store.new].
 obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
-      entities: _entities,
-      lastEntityId: const obx_int.IdUid(1, 6080516527894194749),
-      lastIndexId: const obx_int.IdUid(0, 0),
-      lastRelationId: const obx_int.IdUid(0, 0),
-      lastSequenceId: const obx_int.IdUid(0, 0),
-      retiredEntityUids: const [],
-      retiredIndexUids: const [],
-      retiredPropertyUids: const [],
-      retiredRelationUids: const [],
-      modelVersion: 5,
-      modelVersionParserMinimum: 5,
-      version: 1);
+    entities: _entities,
+    lastEntityId: const obx_int.IdUid(2, 2115039255357664149),
+    lastIndexId: const obx_int.IdUid(0, 0),
+    lastRelationId: const obx_int.IdUid(0, 0),
+    lastSequenceId: const obx_int.IdUid(0, 0),
+    retiredEntityUids: const [2115039255357664149],
+    retiredIndexUids: const [],
+    retiredPropertyUids: const [
+      5243754492761767624,
+      2821686556758027279,
+      886081747249739279,
+    ],
+    retiredRelationUids: const [],
+    modelVersion: 5,
+    modelVersionParserMinimum: 5,
+    version: 1,
+  );
 
   final bindings = <Type, obx_int.EntityDefinition>{
     Note: obx_int.EntityDefinition<Note>(
-        model: _entities[0],
-        toOneRelations: (Note object) => [],
-        toManyRelations: (Note object) => {},
-        getId: (Note object) => object.id,
-        setId: (Note object, int id) {
-          object.id = id;
-        },
-        objectToFB: (Note object, fb.Builder fbb) {
-          final titleOffset = fbb.writeString(object.title);
-          final detailsOffset = fbb.writeString(object.details);
-          fbb.startTable(6);
-          fbb.addInt64(0, object.id ?? 0);
-          fbb.addOffset(1, titleOffset);
-          fbb.addOffset(2, detailsOffset);
-          fbb.addBool(3, object.editing);
-          fbb.addBool(4, object.isComplete);
-          fbb.finish(fbb.endTable());
-          return object.id ?? 0;
-        },
-        objectFromFB: (obx.Store store, ByteData fbData) {
-          final buffer = fb.BufferContext(fbData);
-          final rootOffset = buffer.derefObject(0);
-          final idParam =
-              const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 4);
-          final titleParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGet(buffer, rootOffset, 6, '');
-          final detailsParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGet(buffer, rootOffset, 8, '');
-          final editingParam =
-              const fb.BoolReader().vTableGet(buffer, rootOffset, 10, false);
-          final isCompleteParam =
-              const fb.BoolReader().vTableGet(buffer, rootOffset, 12, false);
-          final object = Note(
-              id: idParam,
-              title: titleParam,
-              details: detailsParam,
-              editing: editingParam,
-              isComplete: isCompleteParam);
+      model: _entities[0],
+      toOneRelations: (Note object) => [],
+      toManyRelations: (Note object) => {},
+      getId: (Note object) => object.id,
+      setId: (Note object, int id) {
+        object.id = id;
+      },
+      objectToFB: (Note object, fb.Builder fbb) {
+        final titleOffset = fbb.writeString(object.title);
+        final detailsOffset = fbb.writeString(object.details);
+        fbb.startTable(10);
+        fbb.addInt64(0, object.id);
+        fbb.addOffset(1, titleOffset);
+        fbb.addOffset(2, detailsOffset);
+        fbb.addBool(3, object.editing);
+        fbb.addInt64(5, object.timeCreated.millisecondsSinceEpoch);
+        fbb.addInt64(6, object.statusIndex);
+        fbb.addInt64(7, object.typeIndex);
+        fbb.addInt64(8, object.wasBeforeIndex);
+        fbb.finish(fbb.endTable());
+        return object.id;
+      },
+      objectFromFB: (obx.Store store, ByteData fbData) {
+        final buffer = fb.BufferContext(fbData);
+        final rootOffset = buffer.derefObject(0);
+        final idParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          4,
+          0,
+        );
+        final titleParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 6, '');
+        final detailsParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 8, '');
+        final editingParam = const fb.BoolReader().vTableGet(
+          buffer,
+          rootOffset,
+          10,
+          false,
+        );
+        final object =
+            Note(
+                id: idParam,
+                title: titleParam,
+                details: detailsParam,
+                editing: editingParam,
+              )
+              ..timeCreated = DateTime.fromMillisecondsSinceEpoch(
+                const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0),
+              )
+              ..statusIndex = const fb.Int64Reader().vTableGet(
+                buffer,
+                rootOffset,
+                16,
+                0,
+              )
+              ..typeIndex = const fb.Int64Reader().vTableGet(
+                buffer,
+                rootOffset,
+                18,
+                0,
+              )
+              ..wasBeforeIndex = const fb.Int64Reader().vTableGet(
+                buffer,
+                rootOffset,
+                20,
+                0,
+              );
 
-          return object;
-        })
+        return object;
+      },
+    ),
   };
 
   return obx_int.ModelDefinition(model, bindings);
@@ -156,18 +222,37 @@ class Note_ {
   static final id = obx.QueryIntegerProperty<Note>(_entities[0].properties[0]);
 
   /// See [Note.title].
-  static final title =
-      obx.QueryStringProperty<Note>(_entities[0].properties[1]);
+  static final title = obx.QueryStringProperty<Note>(
+    _entities[0].properties[1],
+  );
 
   /// See [Note.details].
-  static final details =
-      obx.QueryStringProperty<Note>(_entities[0].properties[2]);
+  static final details = obx.QueryStringProperty<Note>(
+    _entities[0].properties[2],
+  );
 
   /// See [Note.editing].
-  static final editing =
-      obx.QueryBooleanProperty<Note>(_entities[0].properties[3]);
+  static final editing = obx.QueryBooleanProperty<Note>(
+    _entities[0].properties[3],
+  );
 
-  /// See [Note.isComplete].
-  static final isComplete =
-      obx.QueryBooleanProperty<Note>(_entities[0].properties[4]);
+  /// See [Note.timeCreated].
+  static final timeCreated = obx.QueryDateProperty<Note>(
+    _entities[0].properties[4],
+  );
+
+  /// See [Note.statusIndex].
+  static final statusIndex = obx.QueryIntegerProperty<Note>(
+    _entities[0].properties[5],
+  );
+
+  /// See [Note.typeIndex].
+  static final typeIndex = obx.QueryIntegerProperty<Note>(
+    _entities[0].properties[6],
+  );
+
+  /// See [Note.wasBeforeIndex].
+  static final wasBeforeIndex = obx.QueryIntegerProperty<Note>(
+    _entities[0].properties[7],
+  );
 }

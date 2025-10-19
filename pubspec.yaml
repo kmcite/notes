@@ -14,16 +14,17 @@ dependencies:
   path_provider:
   build_runner:
   package_info_plus:
-  go_router:
   file_picker:
   uuid:
-  objectbox: ^4.2.0
-  objectbox_flutter_libs: ^4.2.0
-  objectbox_generator: ^4.2.0
-  manager:
-    path: D://applications//manager//manager
-  signals_flutter: ^6.0.2
+  objectbox: ^5.0.0
+  objectbox_flutter_libs: ^5.0.0
+  navigation_builder: ^0.0.4
+  shared_preferences: ^2.5.3
+  shadcn_ui: ^0.37.4
+  spark:
+    path: C://Users//Adn//CascadeProjects//spark
 dev_dependencies:
+  objectbox_generator: ^5.0.0
   flutter_launcher_icons:
 flutter:
   assets:

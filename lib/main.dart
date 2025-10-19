@@ -1,31 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:forui/theme.dart';
-export 'package:manager/manager.dart';
-import 'package:notes/domain/api/configuration_repository.dart';
-import 'package:notes/ui/notes/home.dart';
-import 'main.dart';
+import 'package:notes/domain/repositories/configuration_repository.dart';
+import 'package:notes/features/app.dart';
+import 'package:notes/domain/repositories/notes_repository.dart';
+import 'package:notes/main.dart';
+import 'package:notes/objectbox.g.dart';
+export 'package:spark/spark.dart';
+export 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(
-    App(),
-  );
+  runApp(App());
 }
 
-class App extends UI {
+class App extends Injector {
   @override
-  Widget build(context) {
-    return MaterialApp(
-      navigatorKey: navigator.navigatorKey,
-      debugShowCheckedModeBanner: false,
-      builder: (context, child) => FTheme(
-        data: fThemeData(),
-        child: child!,
-      ),
-      theme: ThemeData(),
-      darkTheme: ThemeData.dark(),
-      themeMode: darkMode() ? ThemeMode.dark : ThemeMode.light,
-      home: HomePage(),
-    );
+  Widget build(BuildContext context) {
+    return ApplicationView();
+  }
+
+  Future<void> init() async {
+    final store = await openStore();
+    putService(store);
+    final preferences = await SharedPreferences.getInstance();
+    putService(preferences);
+    putRepository(NotesRepository());
+    putRepository(ConfigurationRepository());
   }
 }
