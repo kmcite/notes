@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:notes/main.dart';
+import 'package:notes/domain/repositories/navigator.dart';
 
 class FeedbackPage extends StatelessWidget {
   const FeedbackPage({super.key});
@@ -7,14 +7,8 @@ class FeedbackPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: 'Feedback'.text().pad(),
-      ),
-      body: Icon(
-        Icons.feedback,
-        size: 100,
-        color: Colors.amber,
-      ),
+      appBar: AppBar(title: Text('Feedback')),
+      body: Icon(Icons.feedback, size: 100, color: Colors.amber),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showDialog(
@@ -26,13 +20,7 @@ class FeedbackPage extends StatelessWidget {
                   decoration: InputDecoration(hintText: 'Enter your feedback'),
                 ),
                 actions: [
-                  TextButton(
-                    onPressed: () {
-                      // Handle feedback submission
-                      Navigator.of(context).pop();
-                    },
-                    child: Text('Submit'),
-                  ),
+                  TextButton(onPressed: () => pop(), child: Text('Submit')),
                 ],
               );
             },

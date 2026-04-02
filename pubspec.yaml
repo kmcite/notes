@@ -4,7 +4,7 @@ publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.6.0
+  sdk: ^3.10.0
 dependencies:
   forui:
   flutter:
@@ -20,9 +20,11 @@ dependencies:
   objectbox_flutter_libs: ^5.0.0
   navigation_builder: ^0.0.4
   shared_preferences: ^2.5.3
-  shadcn_ui: ^0.37.4
-  spark:
-    path: C://Users//Adn//CascadeProjects//spark
+  shadcn_ui: ^0.52.0
+  alien_signals: ^2.1.2
+  # spark:
+  #   path: C://Users//Adn//CascadeProjects//spark
+  #  spark: any
 dev_dependencies:
   objectbox_generator: ^5.0.0
   flutter_launcher_icons:

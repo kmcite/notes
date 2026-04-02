@@ -1,140 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:notes/domain/models/available_themes.dart';
-import 'package:notes/domain/models/configuration.dart';
-import 'package:notes/domain/models/note.dart';
-import 'package:notes/domain/repositories/configuration_repository.dart';
+import 'package:notes/domain/repositories/navigator.dart';
 import 'package:notes/domain/repositories/notes_repository.dart';
-import 'package:notes/main.dart';
 
-typedef Themes = ({FThemeData dark, FThemeData light});
-
-typedef SettingsState = ({Iterable<Note> notes, Configuration configuration});
-
-class SettingsEvents {}
-
-class SettingsStarted extends SettingsEvents {}
-
-class UserNameChanged extends SettingsEvents {
-  final String userName;
-
-  UserNameChanged({required this.userName});
-}
-
-class DarkToggled extends SettingsEvents {
-  final bool dark;
-
-  DarkToggled({required this.dark});
-}
-
-class ThemeChanged extends SettingsEvents {
-  final Themes theme;
-
-  ThemeChanged({required this.theme});
-}
-
-class DeleteAllNotes extends SettingsEvents {}
-
-class SettingsBloc extends Bloc<SettingsEvents, SettingsState> {
-  late NotesRepository notesRepository = of();
-  late ConfigurationRepository configurationRepository = of();
-  @override
-  Future<SettingsState> init() async {
-    on<SettingsStarted>(
-      (event, emit) async {
-        await emit.forEach(
-          configurationRepository.stream,
-          onData: (configuration) {
-            return (notes: state.notes, configuration: configuration);
-          },
-        );
-        await emit.forEach(
-          notesRepository.stream,
-          onData: (notes) {
-            return (notes: notes, configuration: state.configuration);
-          },
-        );
-      },
-    );
-    on<UserNameChanged>(_onUserNameChanged);
-    on<DarkToggled>(_onDarkToggled);
-    on<ThemeChanged>(_onThemeChanged);
-    on<DeleteAllNotes>(_onDeleteAllNotes);
-
-    add(SettingsStarted());
-    return (notes: <Note>[], configuration: Configuration());
-  }
-
-  void _onUserNameChanged(UserNameChanged event, emit) {
-    configurationRepository.setUserName(event.userName);
-  }
-
-  void _onDarkToggled(DarkToggled event, emit) {
-    configurationRepository.setDark(!event.dark);
-  }
-
-  void _onThemeChanged(ThemeChanged event, emit) {
-    configurationRepository.setTheme(event.theme);
-  }
-
-  void _onDeleteAllNotes(DeleteAllNotes event, emit) {
-    notesRepository.removeAll();
-  }
-
-  @override
-  Future<void> dispose() {
-    return super.dispose();
-  }
-}
-
-class SettingsView extends Feature<SettingsBloc> {
+class SettingsView extends StatelessWidget {
   SettingsView({super.key});
-
   @override
-  SettingsBloc create() => SettingsBloc();
-
-  @override
-  Widget build(BuildContext context, controller) {
+  Widget build(BuildContext context) {
     return FScaffold(
       header: FHeader.nested(
-        title: 'SETTINGS'.text(),
-        prefixes: [
-          FButton.icon(
-            onPress: navigator.back,
-            child: Icon(FIcons.arrowLeft),
-          )
-        ],
+        title: Text('SETTINGS'),
+        prefixes: [FButton.icon(onPress: pop, child: Icon(FIcons.arrowLeft))],
       ),
       child: ListView(
         children: [
           FTextField(
             label: Text('Enter your name'),
-            initialText: controller.state.configuration.userName,
-            onChange: (value) =>
-                controller.add(UserNameChanged(userName: value)),
-          ).pad(),
+            control: .managed(
+              initial: .new(text: userNameSignal()),
+              onChange: (value) => userNameSignal.set(value.text),
+            ),
+          ),
           FTile(
-            prefix: Icon(
-                controller.state.configuration.dark ? FIcons.moon : FIcons.sun),
-            title: '${controller.state.configuration.dark ? "DARK" : "LIGHT"}'
-                .text(),
-            onPress: () => controller
-                .add(DarkToggled(dark: controller.state.configuration.dark)),
-          ).pad(),
+            prefix: Icon(darkSignal() ? FIcons.moon : FIcons.sun),
+            title: Text('${darkSignal() ? "DARK" : "LIGHT"}'),
+            onPress: onDarkToggled,
+          ),
           FTileGroup.builder(
             count: AvailableThemes.length,
             divider: FItemDivider.full,
             tileBuilder: (context, index) {
               final _theme = AvailableThemes.elementAt(index);
               return FTile(
-                suffix: _theme == controller.state.configuration.theme
+                suffix: _theme == availableThemesSignal()
                     ? Icon(FIcons.checkCheck)
                     : null,
-                title: _theme.dark.debugLabel!.split(' ').first.text(),
-                onPress: () => controller.add(ThemeChanged(theme: _theme)),
+                title: Text(_theme.dark.desktop.debugLabel!.split(' ').first),
+                onPress: () {
+                  // controller.add(ThemeChanged(theme: _theme));
+                  availableThemesSignal.set(_theme);
+                },
               );
             },
-          ).pad(),
+          ),
 
           // ShadSelect(
           //   initialValue: 'slate',
@@ -270,43 +179,31 @@ class SettingsView extends Feature<SettingsBloc> {
           // ),
           FTile(
             prefix: Icon(FIcons.delete),
-            title: 'Clear All Notes'.text(),
+            title: Text('Clear All Notes'),
             onPress: () {
               showDialog(
                 context: context,
                 builder: (context) => FDialog(
                   direction: Axis.horizontal,
-                  title: 'Clear All Notes'.text(),
-                  body: 'Are you sure you want to delete all notes?'.text(),
+                  title: Text('Clear All Notes'),
+                  body: Text('Are you sure you want to delete all notes?'),
                   actions: [
                     FButton(
                       onPress: () async {
-                        controller.add(DeleteAllNotes());
-                        navigator.back();
+                        notesRepository.deletedAllNotes();
+
+                        pop();
                       },
-                      style: FButtonStyle.destructive(),
-                      child: 'Clear'.text(),
+                      child: Text('Clear'),
                     ),
-                    FButton(
-                      onPress: navigator.back,
-                      child: 'Cancel'.text(),
-                    ),
+                    FButton(onPress: pop, child: Text('Cancel')),
                   ],
                 ),
               );
             },
-          ).pad(),
+          ),
         ],
       ),
     );
-  }
-
-  reminderTimes() {}
-}
-
-extension on String {
-  // ignore: unused_element
-  String capitalizeFirst() {
-    return '${this[0].toUpperCase()}${this.substring(1)}';
   }
 }

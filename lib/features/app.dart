@@ -1,68 +1,24 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:forui/theme.dart';
-import 'package:notes/domain/models/configuration.dart';
-import 'package:notes/domain/repositories/configuration_repository.dart';
+import 'package:notes/domain/models/available_themes.dart';
+import 'package:notes/domain/repositories/navigator.dart';
 import 'package:notes/features/notes/home.dart';
-import 'package:notes/main.dart';
 
-class ApplicationBloc extends Cubit<Configuration> {
-  late final ConfigurationRepository configuration = of();
+class ApplicationView extends StatelessWidget {
   @override
-  Future<Configuration> init() async {
-    subscription = configuration.stream.listen(
-      (configuration) async {
-        await Future.delayed(Duration(seconds: 1));
-        emit(configuration);
-      },
-    );
-    return configuration();
-  }
-
-  StreamSubscription<Configuration>? subscription;
-
-  @override
-  Future<void> dispose() {
-    subscription?.cancel();
-    subscription = null;
-    return super.dispose();
-  }
-}
-
-class ApplicationView extends Feature<ApplicationBloc> {
-  @override
-  ApplicationBloc create() => ApplicationBloc();
-  @override
-  Widget buildLoading() {
-    return Center(
-      child: CircularProgressIndicator(),
-    );
-  }
-
-  @override
-  Widget buildError(error) {
-    return Center(
-      child: Text(error.toString()),
-    );
-  }
-
-  @override
-  Widget build(context, controller) {
+  Widget build(context) {
     return MaterialApp(
-      navigatorKey: navigator.key,
+      navigatorKey: navigator,
       debugShowCheckedModeBanner: false,
       builder: (context, child) {
         return FTheme(
-          data: controller.value.dark
-              ? controller.value.theme.dark
-              : controller.value.theme.light,
+          data: effectiveThemeComputed().touch,
           child: child!,
         );
       },
       theme: ThemeData(),
       darkTheme: ThemeData.dark(),
-      themeMode: controller.value.dark ? ThemeMode.dark : ThemeMode.light,
+      themeMode: themeModeComputed(),
       home: HomePage(),
     );
   }
